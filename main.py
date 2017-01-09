@@ -1,4 +1,5 @@
-from sklearn.datasets import fetch_mldata
+from commons.models.datasetFactory import DatasetFactory
 
 if __name__ == '__main__':
-    mnist = fetch_mldata('MNIST original')
+    dataset = DatasetFactory().createDatasetFromOnlineResource()
+    print dataset.flattenDataArray
