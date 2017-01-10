@@ -1,6 +1,7 @@
 import numpy as np
 import math
 
+
 class LogReg:
     __feature = None
     __class = 10
@@ -10,9 +11,13 @@ class LogReg:
     __dataSet = None
     __prior = None
     __error = 0
+    __learningRate = 0
 
-    def __init__(self, dataSet):
+    def __init__(self, dataSet, learningRate=0.01):
         self.__dataSet = dataSet
+        self.__learningRate = learningRate
+        np.random.seed(0)
+        self.__weights = np.random.rand(self.__class + 1)
 
     @property
     def feature(self):
@@ -90,11 +95,11 @@ class LogReg:
         for i in xrange(10):
             denominator += np.dot(W[:, i], X)
 
-        return math.exp(numerator)/math.exp(denominator)
+        return math.exp(numerator) / math.exp(denominator)
 
-    def __cost(self, predicts, targets, fct = 0):
+    def __cost(self, predicts, targets, fct=0):
         if fct == 0:
             cost = 0
-            for predict, target in zip(predicts,targets):
-                cost += 1/2 * math.pow((predict-target), 2)
-            return 1/targets.size * cost
+            for predict, target in zip(predicts, targets):
+                cost += (1 / 2) * math.pow((predict - target), 2)
+            return (1 / targets.size) * cost
