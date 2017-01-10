@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 class LogReg:
     __feature = None
@@ -8,6 +9,7 @@ class LogReg:
     __bias = 0
     __dataSet = None
     __prior = None
+    __error = 0
 
     def __init__(self, dataSet):
         self.__dataSet = dataSet
@@ -68,8 +70,31 @@ class LogReg:
     def prior(self, value):
         self.__prior = value
 
+    @property
+    def error(self):
+        return self.__error
+
+    @error.setter
+    def error(self, value):
+        self.__error = value
+
     def __getPrior(self):
         self.__prior = np.zeros(self.__class)
         for t in self.__dataSet.flattenDataArray.target:
             self.__prior[t] += 1
         self.__prior /= self.__dataSet.flattenDataArray.target.size
+
+    def __softmax(self, index, W, X):
+        numerator = np.dot(W[:, index], X)
+        denominator = 0
+        for i in xrange(10):
+            denominator += np.dot(W[:, i], X)
+
+        return math.exp(numerator)/math.exp(denominator)
+
+    def __cost(self, predicts, targets, fct = 0):
+        if fct == 0:
+            cost = 0
+            for predict, target in zip(predicts,targets):
+                cost += 1/2 * math.pow((predict-target), 2)
+            return 1/targets.size * cost
