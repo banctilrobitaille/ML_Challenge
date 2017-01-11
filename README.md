@@ -1,4 +1,4 @@
-# ML_Challenge <img src="/robot.png" width="60" vertical-align="bottom">
+# ML Challenge <img src="/robot.png" width="60" vertical-align="bottom">
 
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
