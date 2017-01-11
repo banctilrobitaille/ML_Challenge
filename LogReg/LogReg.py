@@ -89,17 +89,34 @@ class LogReg:
             self.__prior[t] += 1
         self.__prior /= self.__dataSet.flattenDataArray.target.size
 
-    def __softmax(self, index, W, X):
-        numerator = np.dot(W[:, index], X)
+    def __softmax(self, W, X):
+        numerator = np.dot(W, X)
         denominator = 0
         for i in xrange(10):
             denominator += np.dot(W[:, i], X)
 
-        return math.exp(numerator) / math.exp(denominator)
+        return np.exp(numerator) / np.exp(denominator)
 
     def __cost(self, predicts, targets, fct=0):
+        cost = 0
+        for predict, target in zip(predicts, targets):
+            cost += (1 / 2) * math.pow((predict - target), 2)
         if fct == 0:
-            cost = 0
-            for predict, target in zip(predicts, targets):
-                cost += (1 / 2) * math.pow((predict - target), 2)
             return (1 / targets.size) * cost
+        elif fct == 1:
+            return cost
+
+    def __updateWeights(self, W, X, cost):
+        tmpW = W - self.__learningRate * cost * X
+        self.__weights = tmpW
+
+    def __maxProb(self, prob):
+        return np.argmax(prob)
+
+    def train(self):
+        # ToDo Pass the feature from the dataSet
+        prob = self.__softmax(self.__weights,self.__dataSet)
+        predict = self.__maxProb(prob)
+        # ToDo Pass the target from the dataSet
+        self.__error = self.__cost(predict,self.__dataSet)
+        self.__updateWeights(self.__weights,self.__dataSet,self.__error)
