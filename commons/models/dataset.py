@@ -1,20 +1,14 @@
-from dataInstance import DataInstance
+class Dataset(object):
+    __data_instances = []
 
+    def with_data_instances(self, data_instances):
+        self.__data_instances = data_instances
+        return self
 
-class Dataset:
-    __dataInstances = []
-    __flattenDataArray = None
-
-    def __init__(self, flatten_data_array=None, images=None):
-        if flatten_data_array:
-            self.__flattenDataArray = flatten_data_array
-        elif images:
-            self.__dataInstances = map(lambda image: DataInstance.from_image(image), images)
-    
     @property
-    def flattenDataArray(self):
-        return self.__flattenDataArray
+    def data_instances(self):
+        return self.__data_instances
 
-    @flattenDataArray.setter
-    def flattenDataArray(self, flatten_data_array):
-        self.__flattenDataArray = flatten_data_array
+    @data_instances.setter
+    def data_instances(self, data_instances):
+        self.__data_instances = data_instances

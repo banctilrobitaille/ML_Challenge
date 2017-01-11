@@ -1,9 +1,14 @@
-class DataInstance:
+import abc
+
+
+class DataInstance(object):
+    __metaclass__ = abc.ABCMeta
     __features = {}
     __label = None
 
-    def __init__(self):
-        pass
+    def __init__(self, features, label):
+        self.__label = label
+        self.__features = features
 
     @property
     def features(self):

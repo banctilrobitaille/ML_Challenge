@@ -1,13 +1,20 @@
+import numpy as np
+
+
 class DatasetHelper:
     WIDTH_INDEX = 0
     HEIGHT_INDEX = 1
 
     @staticmethod
     def extract_features_from_image(image, threshold=1):
-        imageWidth = image.shape[DatasetHelper.WIDTH_INDEX]
-        imageHeight = image.shape[DatasetHelper.HEIGHT_INDEX]
+        image_width = image.shape[DatasetHelper.WIDTH_INDEX]
+        image_height = image.shape[DatasetHelper.HEIGHT_INDEX]
 
-        return {"x1": filter(lambda pixel: pixel >= threshold, image[:imageWidth / 2, :imageHeight / 2]).count(),
-                "x2": filter(lambda pixel: pixel >= threshold, image[imageWidth / 2:, :imageHeight / 2]).count(),
-                "x3": filter(lambda pixel: pixel >= threshold, image[:imageWidth / 2, imageHeight / 2:]).count(),
-                "x4": filter(lambda pixel: pixel >= threshold, image[imageWidth / 2:, imageHeight / 2:]).count()}
+        return {"x1": len(filter(lambda pixel: pixel >= threshold,
+                                 np.array(image[:image_width / 2, :image_height / 2]).flat)),
+                "x2": len(filter(lambda pixel: pixel >= threshold,
+                                 np.array(image[image_width / 2:, :image_height / 2]).flat)),
+                "x3": len(filter(lambda pixel: pixel >= threshold,
+                                 np.array(image[:image_width / 2, image_height / 2:]).flat)),
+                "x4": len(filter(lambda pixel: pixel >= threshold,
+                                 np.array(image[image_width / 2:, image_height / 2:]).flat))}

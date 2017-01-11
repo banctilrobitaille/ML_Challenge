@@ -1,4 +1,4 @@
-from sklearn.datasets import fetch_mldata
+from commons.models.digit import Digit
 from dataset import Dataset
 import os
 import struct
@@ -6,33 +6,32 @@ from array import array
 import numpy as np
 
 
-class DatasetFactory:
-    def __init__(self):
-        self.__path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + '/data'
-        self.__test_img_fname = 't10k-images.idx3-ubyte'
-        self.__test_lbl_fname = 't10k-labels.idx1-ubyte'
-        self.__train_img_fname = 'train-images.idx3-ubyte'
-        self.__train_lbl_fname = 'train-labels.idx1-ubyte'
-
-    def createDatasetFromOnlineResource(self):
-        return Dataset(flatten_data_array=fetch_mldata('MNIST original'))
-
-    def createDatasetFromFiles(self, file='train'):
-
-        if file == 'train':
-            tmpImg, tmpLabel = self.load(os.path.join(self.__path, self.__train_img_fname),
-                                os.path.join(self.__path, self.__train_lbl_fname))
-        elif file == 'test':
-            tmpImg, tmpLabel = self.load(os.path.join(self.__path, self.__test_img_fname),
-                      os.path.join(self.__path, self.__test_lbl_fname))
-
-        labels = np.array(tmpLabel)
-        images = np.array(tmpImg).reshape((60000, 28, 28))
-
-        return images, labels
+class DatasetFactory(object):
+    TEST_IMAGES_FILE_NAME = 't10k-images.idx3-ubyte'
+    TEST_LABELS_FILE_NAME = 't10k-labels.idx1-ubyte'
+    TRAINING_IMAGES_FILE_NAME = 'train-images.idx3-ubyte'
+    TRAINING_LABELS_FILE_NAME = 'train-labels.idx1-ubyte'
+    DATA_DIRECTORY = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + '/data'
 
     @classmethod
-    def load(cls, path_img, path_lbl):
+    def create_dataset_from_files(cls, data_type='training'):
+        images = None
+        labels = None
+
+        if data_type == 'training':
+            images, labels = cls.__load(os.path.join(cls.DATA_DIRECTORY, cls.TRAINING_IMAGES_FILE_NAME),
+                                        os.path.join(cls.DATA_DIRECTORY, cls.TRAINING_LABELS_FILE_NAME))
+        elif data_type == 'test':
+            images, labels = cls.__load(os.path.join(cls.DATA_DIRECTORY, cls.TEST_IMAGES_FILE_NAME),
+                                        os.path.join(cls.DATA_DIRECTORY, cls.TEST_LABELS_FILE_NAME))
+
+        labels = np.array(labels)
+        images = np.array(images).reshape((60000, 28, 28))
+
+        return Dataset().with_data_instances(map(lambda image, label: Digit.from_image(image, label), images, labels))
+
+    @classmethod
+    def __load(cls, path_img, path_lbl):
         with open(path_lbl, 'rb') as file:
             magic, size = struct.unpack(">II", file.read(8))
             if magic != 2049:
@@ -57,4 +56,3 @@ class DatasetFactory:
             images[i][:] = image_data[i * rows * cols:(i + 1) * rows * cols]
 
         return images, labels
-
