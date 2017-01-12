@@ -26,26 +26,22 @@ class ClassificationStats(object):
         self.__classification_start_time = datetime.now()
 
     def register_data_instance_classification(self, label, correctly_classified=False):
-        try:
-            self.__write_lock.acquire()
-            self.__total_number_of_classified_data_instances += 1
+        self.__total_number_of_classified_data_instances += 1
 
-            if label not in self.__number_of_classified_data_instances_by_label:
-                self.__success_rate_by_label[label] = 0
-                self.__number_of_correctly_classified_data_instance_by_label[label] = 0
-                self.__number_of_classified_data_instances_by_label[label] = 1
-            else:
-                self.__number_of_classified_data_instances_by_label[label] += 1
+        if label not in self.__number_of_classified_data_instances_by_label:
+            self.__success_rate_by_label[label] = 0
+            self.__number_of_correctly_classified_data_instance_by_label[label] = 0
+            self.__number_of_classified_data_instances_by_label[label] = 1
+        else:
+            self.__number_of_classified_data_instances_by_label[label] += 1
 
-            if correctly_classified:
-                self.__number_of_correctly_classified_data_instances += 1
-                self.__number_of_correctly_classified_data_instance_by_label[label] += 1
+        if correctly_classified:
+            self.__number_of_correctly_classified_data_instances += 1
+            self.__number_of_correctly_classified_data_instance_by_label[label] += 1
 
-            self.__success_rate_by_label[label] = str(float(
-                    self.__number_of_correctly_classified_data_instance_by_label[label]) / float(
-                    self.__number_of_classified_data_instances_by_label[label]) * 100) + "%"
-        finally:
-            self.__write_lock.release()
+        self.__success_rate_by_label[label] = str(float(
+                self.__number_of_correctly_classified_data_instance_by_label[label]) / float(
+                self.__number_of_classified_data_instances_by_label[label]) * 100) + "%"
 
     def to_string(self):
         return "".join(
