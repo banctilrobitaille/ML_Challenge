@@ -3,33 +3,26 @@ from skimage.filters import threshold_otsu
 
 
 class DatasetHelper:
-    WIDTH_INDEX = 0
-    HEIGHT_INDEX = 1
+    @staticmethod
+    def extract_features_from_image(image, number_of_features=49, threshold=1):
+        features_value = []
+
+        binary_image = image >= threshold_otsu(image)
+        blocks = DatasetHelper.__split_image_into_blocks(binary_image, number_of_blocks=number_of_features)
+
+        for block in blocks:
+            features_value.append(len(filter(lambda pixel: pixel >= threshold, block.flat)))
+
+        return dict(enumerate(features_value))
 
     @staticmethod
-    def extract_features_from_image(image, threshold=1):
-        image_width = image.shape[DatasetHelper.WIDTH_INDEX]
-        image_height = image.shape[DatasetHelper.HEIGHT_INDEX]
+    def __split_image_into_blocks(image, number_of_blocks):
+        blocks = []
+        block_divided_image = map(lambda sub_array: np.array_split(sub_array, np.sqrt(number_of_blocks), axis=1),
+                                  np.array_split(image, np.sqrt(number_of_blocks)))
 
-        image = image >= threshold_otsu(image)
+        for row in block_divided_image:
+            for block in row:
+                blocks.append(np.array(block))
 
-        return {"x1": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[:image_width / 3, :image_height / 3]).flat)),
-                "x2": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[image_width / 3:(image_width / 3) * 2, :image_height / 3]).flat)),
-                "x3": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[(image_width / 3) * 2:image_width, :image_height / 3]).flat)),
-                "x4": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[:image_width / 3, image_height / 3:(image_height / 3) * 2]).flat)),
-                "x5": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[image_width / 3:(image_width / 3) * 2,
-                                          image_height / 3:(image_height / 3) * 2]).flat)),
-                "x6": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[(image_width / 3) * 2:image_width,
-                                          image_height / 3:(image_height / 3) * 2]).flat)),
-                "x7": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[:image_width / 3, (image_height / 3) * 2:]).flat)),
-                "x8": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[image_width / 3:(image_width / 3) * 2, (image_height / 3) * 2:]).flat)),
-                "x9": len(filter(lambda pixel: pixel >= threshold,
-                                 np.array(image[(image_width / 3) * 2:image_width, (image_height / 3) * 2:]).flat))}
+        return blocks

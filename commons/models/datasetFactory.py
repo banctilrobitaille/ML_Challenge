@@ -15,6 +15,7 @@ class DatasetFactory(object):
 
     @classmethod
     def create_dataset_from_files(cls, data_type='training'):
+        print("Creating " + data_type + " dataset from files... \n")
         images = None
         labels = None
 
@@ -26,7 +27,7 @@ class DatasetFactory(object):
                                         os.path.join(cls.DATA_DIRECTORY, cls.TEST_LABELS_FILE_NAME))
 
         labels = np.array(labels)
-        images = np.array(images).reshape((60000, 28, 28))
+        images = np.array(images).reshape((len(images), 28, 28))
 
         return Dataset().with_data_instances(map(lambda image, label: Digit.from_image(image, label), images, labels))
 
