@@ -1,4 +1,4 @@
-# ML Challenge <img src="/robot.png" width="60" vertical-align="bottom">
+# ML Challenge <img src="/robot.png" width="60" vertical-align="bottom"> [![Build Status](https://travis-ci.org/ADozois/ML_Challenge.svg?branch=master)](https://travis-ci.org/ADozois/ML_Challenge )
 
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
