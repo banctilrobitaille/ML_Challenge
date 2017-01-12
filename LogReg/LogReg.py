@@ -3,29 +3,22 @@ import math
 
 
 class LogReg:
-    __feature = None
     __class = 10
     __basisFct = None
     __weights = None
     __bias = 0
-    __dataSet = None
+    __features = None
     __prior = None
     __error = 0
     __learningRate = 0
+    __targets = None
 
     def __init__(self, dataSet, learningRate=0.01):
-        self.__dataSet = dataSet
+        self.__features = self.__getFeatures(dataSet)
+        self.__targets = self.__getLabel(dataSet)
         self.__learningRate = learningRate
         np.random.seed(0)
-        self.__weights = np.random.rand(self.__class + 1)
-
-    @property
-    def feature(self):
-        return self.__feature
-
-    @feature.setter
-    def feature(self, value):
-        self.__feature = value
+        self.__weights = np.random.rand(len(dataSet.data_instances[0].features))
 
     @property
     def classes(self):
@@ -45,7 +38,7 @@ class LogReg:
 
     @property
     def weights(self):
-        return self.weights
+        return self.__weights
 
     @weights.setter
     def weights(self, value):
@@ -60,12 +53,12 @@ class LogReg:
         self.__bias = value
 
     @property
-    def dataSet(self):
-        return self.__dataSet
+    def features(self):
+        return self.__features
 
-    @dataSet.setter
-    def dataSet(self, value):
-        self.__dataSet = value
+    @features.setter
+    def features(self, value):
+        self.__features = value
 
     @property
     def prior(self):
@@ -83,11 +76,19 @@ class LogReg:
     def error(self, value):
         self.__error = value
 
+    @property
+    def targets(self):
+        return self.__targets
+
+    @targets.setter
+    def targets(self, value):
+        self.__targets = value
+
     def __getPrior(self):
         self.__prior = np.zeros(self.__class)
-        for t in self.__dataSet.flattenDataArray.target:
+        for t in self.__features.flattenDataArray.target:
             self.__prior[t] += 1
-        self.__prior /= self.__dataSet.flattenDataArray.target.size
+        self.__prior /= self.__features.flattenDataArray.target.size
 
     def __softmax(self, W, X):
         numerator = np.dot(W, X)
@@ -115,8 +116,23 @@ class LogReg:
 
     def train(self):
         # ToDo Pass the feature from the dataSet
-        prob = self.__softmax(self.__weights,self.__dataSet)
+        prob = self.__softmax(self.__weights, self.__features)
         predict = self.__maxProb(prob)
         # ToDo Pass the target from the dataSet
-        self.__error = self.__cost(predict,self.__dataSet)
-        self.__updateWeights(self.__weights,self.__dataSet,self.__error)
+        self.__error = self.__cost(predict, self.__features)
+        self.__updateWeights(self.__weights, self.__features, self.__error)
+
+    def __getFeatures(self, dataSet):
+        listOfList = []
+        for instance in dataSet.data_instances:
+            list = instance.features.values()
+            listOfList.append(list)
+        features = np.array(listOfList)
+        return features
+
+    def __getLabel(self, dataSet):
+        list = []
+        for instance in dataSet.data_instances:
+            list.append(instance.label)
+        target = np.array(list)
+        return target
