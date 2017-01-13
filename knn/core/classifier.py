@@ -56,7 +56,7 @@ class MultiProcessedKnnClassifier(object):
         classification_threads = map(
                 lambda data_instances: ClassificationProcess(self.__knn_model, data_instances,
                                                              self.__classification_stats, number_of_neighbors),
-                np.array_split(test_data_set.data_instances[:100], multiprocessing.cpu_count()))
+                np.array_split(test_data_set.data_instances[:5], multiprocessing.cpu_count()))
 
         self.__classification_stats.set_classification_start_time()
 
