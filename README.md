@@ -1,4 +1,5 @@
 # ML Challenge <img src="/robot.png" width="60" vertical-align="bottom"> [![Build Status](https://travis-ci.org/ADozois/ML_Challenge.svg?branch=master)](https://travis-ci.org/ADozois/ML_Challenge )
+> This machine learning challenge has been done as part of the Machine Learning(IN 2064) lecture at Technische Universität München. It basically consists of implementing four machine learning algorithms (K Nearest Neighbors, Neural Network, Log Regression and Gaussian Process) in order to classify the well known MNIST data set that can be downloaded following this link: http://yann.lecun.com/exdb/mnist/. The four algorithms have to classify handwritten digits with minimum error. Data pre processing was authorized.
 
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
