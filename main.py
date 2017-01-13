@@ -10,13 +10,8 @@ import numpy as np
 if __name__ == '__main__':
     training_data_set = None
     test_data_set = None
-    sizes = [2, 2, 1]
-    biases = [np.random.randn(y, 1) for y in sizes[1:]]
-    weights = [np.random.randn(y, x)
-               for x, y in zip(sizes[:-1], sizes[1:])]
-    print(weights)
-    print(biases)
-    """try:
+
+    try:
         training_data_set = DatasetLoader.load_data_set(DatasetType.TRAINING)
         test_data_set = DatasetLoader.load_data_set(DatasetType.TEST)
     except UnableToLoadDatasetException as e:
@@ -31,4 +26,4 @@ if __name__ == '__main__':
 
     # knn.classify(training_data_set=training_data_set, test_data_set=test_data_set, number_of_neighbors=10)
     multi_processed_knn(training_data_set=training_data_set).classify(test_data_set=test_data_set,
-                                                                      number_of_neighbors=10)"""
+                                                                      number_of_neighbors=10)
