@@ -1,6 +1,16 @@
 # ML Challenge <img src="/robot.png" width="60" vertical-align="bottom"> [![Build Status](https://travis-ci.org/ADozois/ML_Challenge.svg?branch=master)](https://travis-ci.org/ADozois/ML_Challenge )
 > This machine learning challenge has been done as part of the Machine Learning(IN 2064) lecture at Technische Universität München. It basically consists of implementing four machine learning algorithms (K Nearest Neighbors, Neural Network, Log Regression and Gaussian Process) in order to classify the well known MNIST data set that can be downloaded following this link: http://yann.lecun.com/exdb/mnist/. The four algorithms have to classify handwritten digits with minimum error. Data pre processing was authorized.
 
+### K Nearest Neighbors
+The K Nearest Neighbors (K-NN) can be a very efficient and easy to implement algorithm to classify data. But, with a large data set like MNIST (60000 samples in the training set and a test set of 10000 images) it takes a very long time to compute. This is due to the fact we have to compute the distance (eucledean distance for instance) of every test sample against every training sample in order to find the K nearest neighbor and hopefully correctly classify our data. To accelerate the process, we've implemented a multiprocessing K-NN. 
+
+#### Usage example:
+  <img src="/images/multiknn.png">
+#### Preliminary Results
+Even with multiprocessing K-NN it took more than 7 minutes to classify 100 samples.
+##### Global success rate : 97% 
+  <img src="/images/result_knn.png">
+  
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
 - [X] Get the code
