@@ -1,4 +1,5 @@
 import abc
+from collections import OrderedDict
 
 
 class DataInstance(object):
@@ -25,3 +26,7 @@ class DataInstance(object):
     @label.setter
     def label(self, label):
         self.__label = label
+
+    @property
+    def features_values_vector(self):
+        return OrderedDict(sorted(self.__features.items(), key=lambda t: t[0])).values()

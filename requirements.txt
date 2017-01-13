@@ -1,0 +1,6 @@
+python-dateutil==2.5.3
+pytz==2016.6.1
+cycler==0.10.0
+sockjs-tornado==1.0.3
+tornado==4.4.1
+pyparsing==2.1.4

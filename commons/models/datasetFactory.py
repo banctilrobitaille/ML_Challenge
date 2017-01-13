@@ -1,3 +1,4 @@
+from commons.models.constants.filePath import FilePath
 from commons.models.digit import Digit
 from dataset import Dataset
 import os
@@ -7,26 +8,21 @@ import numpy as np
 
 
 class DatasetFactory(object):
-    TEST_IMAGES_FILE_NAME = 't10k-images.idx3-ubyte'
-    TEST_LABELS_FILE_NAME = 't10k-labels.idx1-ubyte'
-    TRAINING_IMAGES_FILE_NAME = 'train-images.idx3-ubyte'
-    TRAINING_LABELS_FILE_NAME = 'train-labels.idx1-ubyte'
-    DATA_DIRECTORY = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + '/data'
-
     @classmethod
-    def create_dataset_from_files(cls, data_type='training'):
+    def create_dataset_from_files(cls, data_set_type):
+        print("Creating " + data_set_type + " dataset from files... \n")
         images = None
         labels = None
 
-        if data_type == 'training':
-            images, labels = cls.__load(os.path.join(cls.DATA_DIRECTORY, cls.TRAINING_IMAGES_FILE_NAME),
-                                        os.path.join(cls.DATA_DIRECTORY, cls.TRAINING_LABELS_FILE_NAME))
-        elif data_type == 'test':
-            images, labels = cls.__load(os.path.join(cls.DATA_DIRECTORY, cls.TEST_IMAGES_FILE_NAME),
-                                        os.path.join(cls.DATA_DIRECTORY, cls.TEST_LABELS_FILE_NAME))
+        if data_set_type == 'training':
+            images, labels = cls.__load(os.path.join(FilePath.DATA_FOLDER, FilePath.TRAINING_IMAGES_FILE_NAME),
+                                        os.path.join(FilePath.DATA_FOLDER, FilePath.TRAINING_LABELS_FILE_NAME))
+        elif data_set_type == 'test':
+            images, labels = cls.__load(os.path.join(FilePath.DATA_FOLDER, FilePath.TEST_IMAGES_FILE_NAME),
+                                        os.path.join(FilePath.DATA_FOLDER, FilePath.TEST_LABELS_FILE_NAME))
 
         labels = np.array(labels)
-        images = np.array(images).reshape((60000, 28, 28))
+        images = np.array(images).reshape((len(images), 28, 28))
 
         return Dataset().with_data_instances(map(lambda image, label: Digit.from_image(image, label), images, labels))
 
