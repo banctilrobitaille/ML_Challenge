@@ -1,5 +1,4 @@
 import multiprocessing
-import copy
 from multiprocessing import Process
 
 from commons.models.classificationStats import ClassificationStats
@@ -9,15 +8,18 @@ import numpy as np
 
 
 class KnnClassifier(object):
-    @staticmethod
-    def classify(training_data_set, test_data_set, number_of_neighbors):
+    __knn_model = None
+
+    def __init__(self, training_data_set):
+        self.__knn_model = Model().train_with_dataset(training_data_set)
+
+    def classify(self, data_set, number_of_neighbors):
         print("KNN classification in progess... \n")
         classification_stats = ClassificationStats(ClassificationStats.CLASSIFICATION_METHODS["KNN"])
-        knn_model = Model().train_with_dataset(training_data_set)
 
         classification_stats.set_classification_start_time()
-        for data_instance in test_data_set.data_instances[:1000]:
-            estimated_label = knn_model.classify(data_instance, number_of_neighbors=number_of_neighbors)
+        for data_instance in data_set.data_instances[:10]:
+            estimated_label = self.__knn_model.classify(data_instance, number_of_neighbors=number_of_neighbors)
             correctly_classified = data_instance.label == estimated_label
             classification_stats.register_data_instance_classification(label=data_instance.label,
                                                                        correctly_classified=correctly_classified)
@@ -50,7 +52,7 @@ class MultiProcessedKnnClassifier(object):
     def number_of_neighbors(self):
         return self.__number_of_neighbors
 
-    def classify(self, test_data_set, number_of_neighbors):
+    def classify(self, data_set, number_of_neighbors):
         print("".join(["KNN classification in progess with up to ", str(multiprocessing.cpu_count()),
                        " classification processes...\n"]))
         self.__number_of_neighbors = number_of_neighbors
@@ -58,7 +60,7 @@ class MultiProcessedKnnClassifier(object):
         classification_threads = map(
                 lambda data_instances: ClassificationProcess(self.__knn_model, data_instances,
                                                              self.__classification_stats, number_of_neighbors),
-                np.array_split(test_data_set.data_instances[:1000], multiprocessing.cpu_count()))
+                np.array_split(data_set.data_instances[:1000], multiprocessing.cpu_count()))
 
         self.__classification_stats.set_classification_start_time()
 
