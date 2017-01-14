@@ -24,6 +24,6 @@ if __name__ == '__main__':
         except UnableToSaveDatasetException as e:
             print(e.message)
 
-    knn.classify(training_data_set=training_data_set, test_data_set=test_data_set, number_of_neighbors=10)
-    # multi_processed_knn(training_data_set=training_data_set).classify(test_data_set=test_data_set,
-    # number_of_neighbors=10)
+            # knn.classify(training_data_set=training_data_set, test_data_set=test_data_set, number_of_neighbors=10)
+    multi_processed_knn(training_data_set=training_data_set).classify(test_data_set=test_data_set,
+                                                                      number_of_neighbors=10)

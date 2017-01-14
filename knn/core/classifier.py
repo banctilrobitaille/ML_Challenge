@@ -51,11 +51,12 @@ class MultiProcessedKnnClassifier(object):
         return self.__number_of_neighbors
 
     def classify(self, test_data_set, number_of_neighbors):
-        print("KNN classification in progess... \n")
+        print("".join(["KNN classification in progess with up to ", str(multiprocessing.cpu_count()),
+                       " classification processes...\n"]))
         self.__number_of_neighbors = number_of_neighbors
 
         classification_threads = map(
-                lambda data_instances: ClassificationProcess(copy.deepcopy(self.__knn_model), data_instances,
+                lambda data_instances: ClassificationProcess(self.__knn_model, data_instances,
                                                              self.__classification_stats, number_of_neighbors),
                 np.array_split(test_data_set.data_instances[:1000], multiprocessing.cpu_count()))
 
