@@ -12,9 +12,9 @@ class Neighborhood(object):
         if len(self.__neighbors) < self.__number_of_neighbors:
             self.__neighbors[new_neighbor] = new_neighbor_distance
         else:
-            self.__neighbors = OrderedDict(sorted(self.__neighbors.items(), key=lambda t: t[1], reverse=True))
-            for neighbor, distance in self.__neighbors.iteritems():
-                if new_neighbor_distance < distance:
+            if new_neighbor_distance < max(self.__neighbors.values()):
+                self.__neighbors = OrderedDict(sorted(self.__neighbors.items(), key=lambda t: t[1], reverse=True))
+                for neighbor, distance in self.__neighbors.iteritems():
                     del self.__neighbors[neighbor]
                     self.__neighbors[new_neighbor] = new_neighbor_distance
                     return True

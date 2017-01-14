@@ -4,7 +4,7 @@ from skimage.filters import threshold_otsu
 
 class DatasetHelper:
     @staticmethod
-    def extract_features_from_image(image, number_of_features=49, threshold=1):
+    def extract_features_from_image(image, number_of_features=196, threshold=1):
         features_value = []
 
         binary_image = image >= threshold_otsu(image)
