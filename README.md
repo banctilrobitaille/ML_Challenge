@@ -7,7 +7,7 @@ The K Nearest Neighbors (K-NN) can be a very efficient and easy to implement alg
 #### Usage example:
   <img src="/images/multiknn.png">
 #### Preliminary Results
-Even with multiprocessing K-NN it took more than 7 minutes to classify 100 samples.
+Even with multiprocessing K-NN it took more than 4 minutes to classify 100 samples.
 ##### Global success rate : 97% 
   <img src="/images/result_knn_2.png">
   
