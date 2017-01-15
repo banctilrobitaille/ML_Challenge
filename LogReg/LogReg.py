@@ -77,6 +77,14 @@ class LogReg:
         self.__error = value
 
     @property
+    def learningRate(self):
+        return self.__learningRate
+
+    @learningRate.setter
+    def learningRate(self, value):
+        self.__learningRate = value
+
+    @property
     def targets(self):
         return self.__targets
 
@@ -86,9 +94,9 @@ class LogReg:
 
     def __getPrior(self):
         self.__prior = np.zeros(self.__class)
-        for t in self.__features.flattenDataArray.target:
+        for t in self.__targets:
             self.__prior[t] += 1
-        self.__prior /= self.__features.flattenDataArray.target.size
+        self.__prior /= self.__targets.size
 
     def __softmax(self, W, X):
         numerator = np.dot(W, X)
@@ -98,14 +106,11 @@ class LogReg:
 
         return np.exp(numerator) / np.exp(denominator)
 
-    def __cost(self, predicts, targets, fct=0):
+    def __cost(self, predicts, targets):
         cost = 0
         for predict, target in zip(predicts, targets):
             cost += (1 / 2) * math.pow((predict - target), 2)
-        if fct == 0:
-            return (1 / targets.size) * cost
-        elif fct == 1:
-            return cost
+
 
     def __updateWeights(self, W, X, cost):
         tmpW = W - self.__learningRate * cost * X
@@ -136,3 +141,6 @@ class LogReg:
             list.append(instance.label)
         target = np.array(list)
         return target
+
+    def __logLikelihood(self):
+        pass
