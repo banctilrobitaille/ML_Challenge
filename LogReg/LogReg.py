@@ -8,7 +8,6 @@ class LogReg:
     __weights = None
     __bias = 0
     __features = None
-    __prior = None
     __error = 0
     __learningRate = 0
     __targets = None
@@ -18,7 +17,7 @@ class LogReg:
         self.__targets = self.__getLabel(dataSet)
         self.__learningRate = learningRate
         np.random.seed(0)
-        self.__weights = np.random.rand(len(dataSet.data_instances[0].features))
+        self.__weights = np.random.rand(len(dataSet.data_instances[0].features), self.__class)
 
     @property
     def classes(self):
@@ -61,14 +60,6 @@ class LogReg:
         self.__features = value
 
     @property
-    def prior(self):
-        return self.__prior
-
-    @prior.setter
-    def prior(self, value):
-        self.__prior = value
-
-    @property
     def error(self):
         return self.__error
 
@@ -92,12 +83,6 @@ class LogReg:
     def targets(self, value):
         self.__targets = value
 
-    def __getPrior(self):
-        self.__prior = np.zeros(self.__class)
-        for t in self.__targets:
-            self.__prior[t] += 1
-        self.__prior /= self.__targets.size
-
     def __softmax(self, W, X):
         numerator = np.dot(W, X)
         denominator = 0
@@ -105,12 +90,6 @@ class LogReg:
             denominator += np.dot(W[:, i], X)
 
         return np.exp(numerator) / np.exp(denominator)
-
-    def __cost(self, predicts, targets):
-        cost = 0
-        for predict, target in zip(predicts, targets):
-            cost += (1 / 2) * math.pow((predict - target), 2)
-
 
     def __updateWeights(self, W, X, cost):
         tmpW = W - self.__learningRate * cost * X
