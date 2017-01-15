@@ -27,5 +27,5 @@ if __name__ == '__main__':
     # knn.classify(training_data_set=training_data_set, test_data_set=test_data_set, number_of_neighbors=10)
     #multi_processed_knn(training_data_set=training_data_set).classify(test_data_set=test_data_set,number_of_neighbors=10)
 
-    cls = LogReg(test_data_set,0.1)
-    print(cls.learningRate)
+    cls = LogReg(training_data_set,0.1)
+    cls.train()

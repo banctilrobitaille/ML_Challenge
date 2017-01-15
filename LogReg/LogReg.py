@@ -9,6 +9,7 @@ class LogReg:
     __bias = 0
     __features = None
     __error = 0
+    __cost = None
     __learningRate = 0
     __targets = None
 
@@ -17,7 +18,7 @@ class LogReg:
         self.__targets = self.__getLabel(dataSet)
         self.__learningRate = learningRate
         np.random.seed(0)
-        self.__weights = np.random.rand(len(dataSet.data_instances[0].features), self.__class)
+        self.__weights = np.random.rand(len(dataSet.data_instances[0].features)+1, self.__class)
 
     @property
     def classes(self):
@@ -84,33 +85,32 @@ class LogReg:
         self.__targets = value
 
     def __softmax(self, W, X):
-        numerator = np.dot(W, X)
+        numerator = np.dot(X,W)
         denominator = 0
         for i in xrange(10):
             denominator += np.dot(W[:, i], X)
 
         return np.exp(numerator) / np.exp(denominator)
 
-    def __updateWeights(self, W, X, cost):
-        tmpW = W - self.__learningRate * cost * X
-        self.__weights = tmpW
+    def __updateWeights(self, W, grad, target):
+        self.__weights[:, target] = W[:, target] - self.__learningRate * grad
 
     def __maxProb(self, prob):
         return np.argmax(prob)
 
     def train(self):
-        # ToDo Pass the feature from the dataSet
-        prob = self.__softmax(self.__weights, self.__features)
-        predict = self.__maxProb(prob)
-        # ToDo Pass the target from the dataSet
-        self.__error = self.__cost(predict, self.__features)
-        self.__updateWeights(self.__weights, self.__features, self.__error)
+        for feature, target in zip(self.__features, self.__targets):
+            prob = self.__softmax(self.__weights, feature)
+            self.__error = self.__logLikelihood(prob, target)
+            print self.__error
+            self.__updateWeights(self.__weights,self.__grad(prob,target,feature),target)
 
     def __getFeatures(self, dataSet):
         listOfList = []
         for instance in dataSet.data_instances:
-            list = instance.features.values()
-            listOfList.append(list)
+            valueList = instance.features.values()
+            valueList.append(1)
+            listOfList.append(valueList)
         features = np.array(listOfList)
         return features
 
@@ -121,5 +121,8 @@ class LogReg:
         target = np.array(list)
         return target
 
-    def __logLikelihood(self):
-        pass
+    def __logLikelihood(self, prob, target):
+        return -math.log(1-prob[target])
+
+    def __grad(self, prob, target, feature):
+        return (prob[target]-target) * feature
