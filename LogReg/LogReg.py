@@ -85,7 +85,7 @@ class LogReg:
         self.__targets = value
 
     def __softmax(self, W, X):
-        numerator = np.dot(X,W)
+        numerator = np.dot(np.transpose(W), X)
         denominator = 0
         for i in xrange(10):
             denominator += np.dot(W[:, i], X)
