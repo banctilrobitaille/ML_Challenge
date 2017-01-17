@@ -3,12 +3,20 @@ from commons.exceptions.unableToSaveDatasetException import UnableToSaveDatasetE
 from commons.helpers.datasetLoader import DatasetLoader
 from commons.models.constants.datasetType import DatasetType
 from commons.models.datasetFactory import DatasetFactory
+from models.cost_computers.cost_computer import CostFunctionTypes
+from nn.models.neurons.neuron import NeuronTypes
 from knn.core.classifier import KnnClassifier as knn
 from knn.core.classifier import MultiProcessedKnnClassifier as multi_processed_knn
+from nn.core.network import NetworkFactory, NetworkTypes
 
 if __name__ == '__main__':
     training_data_set = None
     test_data_set = None
+
+    neural_network = NetworkFactory.create_network_with(network_type=NetworkTypes.REGULAR, number_of_layers=3,
+                                                        number_of_neurons_per_layer=[3, 4, 5],
+                                                        type_of_neuron=NeuronTypes.SIGMOID,
+                                                        cost_function_type=CostFunctionTypes.QUADRATIC)
 
     try:
         training_data_set = DatasetLoader.load_data_set(DatasetType.TRAINING)
@@ -23,5 +31,5 @@ if __name__ == '__main__':
         except UnableToSaveDatasetException as e:
             print(e.message)
 
-    knn(training_data_set=training_data_set).classify(data_set=test_data_set, number_of_neighbors=10)
-    # multi_processed_knn(training_data_set=training_data_set).classify(data_set=test_data_set, number_of_neighbors=10)
+            # knn(training_data_set=training_data_set).classify(data_set=test_data_set, number_of_neighbors=10)
+            # multi_processed_knn(training_data_set=training_data_set).classify(data_set=test_data_set, number_of_neighbors=10)
