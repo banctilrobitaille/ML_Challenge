@@ -100,13 +100,16 @@ class LogReg:
     def train(self):
         i = 1
         print "Training ...\n\n"
-        for feature, target in zip(self.__features, self.__targets):
-            prob = self.__softmax(self.__weights, feature)
-            self.__error += (1/i) * self.__logLikelihood(target, prob)
-            self.__updateWeights(prob, target, feature)
+        for epoch in range(0, 10):
+            for feature, target in zip(self.__features, self.__targets):
+                prob = self.__softmax(self.__weights, feature)
+                self.__error += (1/i) * self.__logLikelihood(target, prob)
+                print self.__error
+                if self.__error != 0:
+                    self.__updateWeights(prob, target, feature)
+                i += 1
         print "Training finished"
         print "------------------------------"
-
 
     def __getFeatures(self, dataSet):
         listOfList = []
