@@ -13,12 +13,12 @@ class LogReg:
     __learningRate = 0
     __targets = None
 
-    def __init__(self, dataSet, learningRate=0.01):
+    def __init__(self, dataSet, learningRate=0.0001):
         self.__features = self.__getFeatures(dataSet)
         self.__targets = self.__getLabel(dataSet)
         self.__learningRate = learningRate
-        np.random.seed(0)
-        self.__weights = np.random.rand(len(dataSet.data_instances[0].features)+1, self.__class)
+        np.random.seed()
+        self.__weights = np.random.randn(len(dataSet.data_instances[0].features)+1, self.__class)
 
     @property
     def classes(self):
@@ -85,25 +85,28 @@ class LogReg:
         self.__targets = value
 
     def __softmax(self, W, X):
-        numerator = np.dot(np.transpose(W), X)
-        denominator = 0
-        for i in xrange(10):
-            denominator += np.dot(W[:, i], X)
+        numerator = np.dot(X,W)
+        numerator -= np.max(numerator)
+        return np.exp(numerator) / np.sum(np.exp(numerator))
 
-        return np.exp(numerator) / np.exp(denominator)
+    def __updateWeights(self, prob, target, feature):
+        index = np.argmax(target)
+        self.__weights[:, index] -= self.__learningRate * self.__grad(prob,target,feature)
 
-    def __updateWeights(self, W, grad, target):
-        self.__weights[:, target] = W[:, target] - self.__learningRate * grad
 
     def __maxProb(self, prob):
         return np.argmax(prob)
 
     def train(self):
+        i = 1
+        print "Training ...\n\n"
         for feature, target in zip(self.__features, self.__targets):
             prob = self.__softmax(self.__weights, feature)
-            self.__error = self.__logLikelihood(prob, target)
-            print self.__error
-            self.__updateWeights(self.__weights,self.__grad(prob,target,feature),target)
+            self.__error += (1/i) * self.__logLikelihood(target, prob)
+            self.__updateWeights(prob, target, feature)
+        print "Training finished"
+        print "------------------------------"
+
 
     def __getFeatures(self, dataSet):
         listOfList = []
@@ -115,14 +118,39 @@ class LogReg:
         return features
 
     def __getLabel(self, dataSet):
-        list = []
+        target = np.zeros((len(dataSet.data_instances),self.__class))
+        i = 0
         for instance in dataSet.data_instances:
-            list.append(instance.label)
-        target = np.array(list)
+            target[i,instance.label] = 1
+            i += 1
         return target
 
-    def __logLikelihood(self, prob, target):
-        return -math.log(1-prob[target])
+    def __logLikelihood(self, target, prob):
+        return -np.dot(target,np.log(prob))
 
     def __grad(self, prob, target, feature):
-        return (prob[target]-target) * feature
+        return -(target[np.argmax(target)] - prob[np.argmax(prob)]) * feature
+
+    def __predict(self, prob=None, feature=None):
+        if prob is None:
+            prob = self.__softmax(self.__weights,feature)
+        index = np.argmax(prob)
+        prediction = np.zeros(self.__class)
+        prediction[index] = 1
+        return prediction
+
+    def test(self, dataSet):
+        self.__features = self.__getFeatures(dataSet)
+        self.__targets = self.__getLabel(dataSet)
+        goodPred = 0
+        badPred = 0
+        print "Testing ..."
+        for feature, target in zip(self.__features, self.__targets):
+            prob = self.__predict(feature=feature)
+            predict = np.argmax(prob)
+            if predict == np.argmax(target):
+                goodPred += 1
+            else:
+                badPred += 1
+        pred = ((1.0*goodPred)/(goodPred+badPred)) * 100.0
+        print "Percentage of good prediction is: " + str(pred)
