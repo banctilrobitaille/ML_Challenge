@@ -29,5 +29,5 @@ class SigmoidNeuron(AbstractNeuron):
 class NeuronFactory(object):
     @staticmethod
     def create_neuron_from_type(neuron_type):
-        if neuron_type == NeuronTypes.SIGMOID_NEURON:
+        if neuron_type == NeuronTypes.SIGMOID:
             return SigmoidNeuron()
