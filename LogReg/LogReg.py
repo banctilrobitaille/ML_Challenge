@@ -17,8 +17,8 @@ class LogReg:
         self.__features = self.__getFeatures(dataSet)
         self.__targets = self.__getLabel(dataSet)
         self.__learningRate = learningRate
-        np.random.seed()
-        self.__weights = np.random.randn(len(dataSet.data_instances[0].features) + 1, self.__class)
+        np.random.seed(300)
+        self.__weights = np.random.rand(len(dataSet.data_instances[0].features) + 1, self.__class)
 
     @property
     def classes(self):
@@ -97,7 +97,6 @@ class LogReg:
         return np.argmax(prob)
 
     def train(self):
-        i = 1
         print "Training ...\n\n"
         for epoch in range(0, 10000):
             prob = self.__softmax(self.__weights, self.__features)
@@ -107,7 +106,8 @@ class LogReg:
             #self.__updateWeights(prob, self.__targets, self.__features)
             grad = self.__grad(prob, self.__targets, self.__features)
             self.__weights -= map(lambda x: x * self.__learningRate, self.__grad(prob, self.__targets, self.__features))
-            i += 1
+            #if self.__error < 0.5:
+            #    break
         print "Training finished"
         print "------------------------------"
 
@@ -141,26 +141,20 @@ class LogReg:
     def __predict(self, prob=None, feature=None):
         if prob is None:
             prob = self.__softmax(self.__weights, feature)
-        index = np.argmax(prob)
-        prediction = np.zeros(self.__class)
-        prediction[index] = 1
+        prediction = np.apply_along_axis(self.__classPredict,1,prob)
         return prediction
 
     def test(self, dataSet):
         self.__features = self.__getFeatures(dataSet)
         self.__targets = self.__getLabel(dataSet)
-        goodPred = 0
-        badPred = 0
+        accuracy = 0.0
         print "Testing ..."
-        for feature, target in zip(self.__features, self.__targets):
-            prob = self.__predict(feature=feature)
-            predict = np.argmax(prob)
-            if predict == np.argmax(target):
-                goodPred += 1
-            else:
-                badPred += 1
-        pred = ((1.0 * goodPred) / (goodPred + badPred)) * 100.0
-        print "Percentage of good prediction is: " + str(pred)
+        predict = self.__predict(feature=self.__features)
+        for p,t in zip(predict, self.__targets):
+            if np.array_equal(p,t):
+                accuracy += 1.0
+        accuracy = (accuracy/self.__features.shape[0])*100
+        print "Percentage of good prediction is: " + str(accuracy)
 
     def __minArray(self,X):
         X -= np.max(X)
@@ -169,3 +163,14 @@ class LogReg:
     def __classProb(self,X):
         X =  np.exp(X) / np.sum(np.exp(X))
         return X
+
+    def __classPredict(self,X):
+        P = np.zeros(self.__class)
+        P[np.argmax(X)] = 1
+        return P
+
+    def __classCompare(self,X,T):
+        if np.array_equal(X,T):
+            return 1
+        else:
+            return 0
