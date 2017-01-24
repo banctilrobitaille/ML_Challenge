@@ -85,13 +85,13 @@ class LogReg:
         self.__targets = value
 
     def __softmax(self, W, X):
-        numerator = np.dot(X, W)
-        numerator -= np.max(numerator)
-        return np.exp(numerator) / np.sum(np.exp(numerator))
+        Values = np.dot(X, W)
+        Values = np.apply_along_axis(self.__minArray,1,Values)
+        Values = np.apply_along_axis(self.__classProb,1,Values)
+        return Values
 
     def __updateWeights(self, prob, target, feature):
-        index = np.argmax(target)
-        self.__weights[:, index] -= self.__learningRate * self.__grad(prob, target, feature)
+        self.__weights -= self.__learningRate * self.__grad(prob, target, feature)
 
     def __maxProb(self, prob):
         return np.argmax(prob)
@@ -99,14 +99,15 @@ class LogReg:
     def train(self):
         i = 1
         print "Training ...\n\n"
-        for epoch in range(0, 10):
-            for feature, target in zip(self.__features, self.__targets):
-                prob = self.__softmax(self.__weights, feature)
-                self.__error += (1 / i) * self.__logLikelihood(target, prob)
-                print self.__error
-                if self.__error != 0:
-                    self.__updateWeights(prob, target, feature)
-                i += 1
+        for epoch in range(0, 10000):
+            prob = self.__softmax(self.__weights, self.__features)
+            self.__error = self.__logLikelihood(self.__targets, prob)
+            print self.__error
+            #if self.__error != 0:
+            #self.__updateWeights(prob, self.__targets, self.__features)
+            grad = self.__grad(prob, self.__targets, self.__features)
+            self.__weights -= map(lambda x: x * self.__learningRate, self.__grad(prob, self.__targets, self.__features))
+            i += 1
         print "Training finished"
         print "------------------------------"
 
@@ -128,10 +129,14 @@ class LogReg:
         return target
 
     def __logLikelihood(self, target, prob):
-        return -np.dot(target, np.log(prob))
+        return (-(np.log(prob)*target).sum(1)).mean()
+        #sum = 0
+        #for i in xrange(0,target.shape[0]):
+        #    sum += -target[i]*np.log(prob[i])
+        #return sum
 
     def __grad(self, prob, target, feature):
-        return -(target[np.argmax(target)] - prob[np.argmax(prob)]) * feature
+        return -(np.dot(feature.T,(target - prob)))/feature.shape[0]
 
     def __predict(self, prob=None, feature=None):
         if prob is None:
@@ -156,3 +161,11 @@ class LogReg:
                 badPred += 1
         pred = ((1.0 * goodPred) / (goodPred + badPred)) * 100.0
         print "Percentage of good prediction is: " + str(pred)
+
+    def __minArray(self,X):
+        X -= np.max(X)
+        return X
+
+    def __classProb(self,X):
+        X =  np.exp(X) / np.sum(np.exp(X))
+        return X
