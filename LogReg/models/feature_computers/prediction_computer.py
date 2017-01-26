@@ -2,6 +2,10 @@ import numpy as np
 import abc
 
 
+class ProbabilityType(object):
+    SOFTMAX = "softmax"
+    PREDICT = "predict"
+
 class ComputeProbability(object):
     __metaclass__ = abc.ABCMeta
 
@@ -41,3 +45,11 @@ class Predict(ComputeProbability):
     def compute_probability(self, input_matrix):
         softmax_matrix = np.apply_along_axis(ComputeProbability.probability_vector, 1, input_matrix)
         return softmax_matrix
+
+class ProbabilityComputerFactory(object):
+    @staticmethod
+    def create_probability_computer(probability_type):
+        if  probability_type == ProbabilityType.SOFTMAX:
+            return Softmax()
+        elif probability_type == ProbabilityType.PREDICT:
+            return Predict()
