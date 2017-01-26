@@ -6,6 +6,7 @@ class ProbabilityType(object):
     SOFTMAX = "softmax"
     PREDICT = "predict"
 
+
 class ComputeProbability(object):
     __metaclass__ = abc.ABCMeta
 
@@ -36,7 +37,6 @@ class Softmax(ComputeProbability):
 
 
 class Predict(ComputeProbability):
-
     def predict(self, input_matrix):
         softmax_matrix = self.compute_probability(input_matrix)
         prediction_matrix = np.apply_along_axis(ComputeProbability.probability_vector, 1, softmax_matrix)
@@ -46,10 +46,11 @@ class Predict(ComputeProbability):
         softmax_matrix = np.apply_along_axis(ComputeProbability.probability_vector, 1, input_matrix)
         return softmax_matrix
 
+
 class ProbabilityComputerFactory(object):
     @staticmethod
     def create_probability_computer(probability_type):
-        if  probability_type == ProbabilityType.SOFTMAX:
+        if probability_type == ProbabilityType.SOFTMAX:
             return Softmax()
         elif probability_type == ProbabilityType.PREDICT:
             return Predict()
