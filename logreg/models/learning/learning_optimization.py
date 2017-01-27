@@ -18,6 +18,7 @@ class UpdateWeights(object):
     def update_weights(weight_matrix, probability_matrix, target_matrix, feature_matrix, learning_rate):
         weight_matrix -= learning_rate * GradientDescent.compute_gradient(probability_matrix, target_matrix,
                                                                           feature_matrix)
+        return weight_matrix
 
 
 class Learn(object):
@@ -35,8 +36,8 @@ class Learn(object):
             cost = cost_computer.compute_cost(target_matrix, probability_matrix)
             if self._debug:
                 print cost
-            weight_matrix -= UpdateWeights.update_weights(weight_matrix, probability_matrix, target_matrix,
-                                                          feature_matrix, self.learning_rate)
+            weight_matrix = UpdateWeights.update_weights(weight_matrix, probability_matrix, target_matrix,
+                                                         feature_matrix, self.learning_rate)
             if cost < self.cost_threshold:
                 return weight_matrix
         return weight_matrix
