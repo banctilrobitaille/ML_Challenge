@@ -3,6 +3,7 @@ from commons.exceptions.unableToSaveDatasetException import UnableToSaveDatasetE
 from commons.helpers.datasetLoader import DatasetLoader
 from commons.models.constants.datasetType import DatasetType
 from commons.models.datasetFactory import DatasetFactory
+from helpers.datasetHelper import DatasetHelper
 from models.cost_computers.cost_computer import CostFunctionTypes
 from nn.models.neurons.neuron import NeuronTypes
 from nn.models.learning.learning_algorithms import LearningAlgorithmTypes
@@ -29,10 +30,12 @@ if __name__ == '__main__':
 
     neural_network = NetworkFactory.create_network_with(network_type=NetworkTypes.FEED_FORWARD,
                                                         number_of_layers=3,
-                                                        number_of_neurons_per_layer=[3, 4, 5],
+                                                        number_of_neurons_per_layer=[196, 15, 10],
                                                         type_of_neuron=NeuronTypes.SIGMOID,
                                                         cost_function_type=CostFunctionTypes.QUADRATIC,
                                                         learning_algorithm_type=LearningAlgorithmTypes.SGD)
-    neural_network.learn(training_data_set=training_data_set, number_of_epochs=2, learning_rate=0.1, size_of_batch=5)
+    neural_network.learn(training_data_set=training_data_set, number_of_epochs=2, learning_rate=0.1, size_of_batch=2)
+    #print(neural_network.accept(test_data_set.data_instances[1].features_values_vector))
+    #print(test_data_set.data_instances[1].label)
     # knn(training_data_set=training_data_set).classify(data_set=test_data_set, number_of_neighbors=10)
     # multi_processed_knn(training_data_set=training_data_set).classify(data_set=test_data_set, number_of_neighbors=10)

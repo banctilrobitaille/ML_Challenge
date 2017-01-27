@@ -26,3 +26,8 @@ class DatasetHelper:
                 blocks.append(np.array(block))
 
         return blocks
+
+    @staticmethod
+    def normalize(input_vector):
+        max_value = np.max(input_vector);
+        return np.array(map(lambda feature: feature / float(max_value), input_vector))

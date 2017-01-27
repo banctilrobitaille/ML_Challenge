@@ -23,7 +23,7 @@ class SigmoidNeuron(AbstractNeuron):
         return 1.0 / (1.0 + np.exp(-vector))
 
     def compute_derivative(self, vector):
-        pass
+        return self.compute(vector) * (1 - self.compute(vector))
 
 
 class NeuronFactory(object):

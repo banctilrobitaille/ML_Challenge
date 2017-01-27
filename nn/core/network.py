@@ -34,7 +34,7 @@ class AbstractNetwork(object):
                  learning_algorithm_type):
         self.__number_of_layers = number_of_layers
         self.__biases = [np.random.randn(y, 1) for y in number_of_neurons_per_layer[1:]]
-        self.__weights = [np.random.randn(y, x) for x, y in
+        self.__weights = [np.random.randn(x, y) for x, y in
                           zip(number_of_neurons_per_layer[:-1], number_of_neurons_per_layer[1:])]
 
         self.__neuron = NeuronFactory.create_neuron_from_type(type_of_neuron)
@@ -91,4 +91,5 @@ class FeedForwardNetwork(AbstractNetwork):
         return output_vector
 
     def learn(self, training_data_set, number_of_epochs, learning_rate, size_of_batch, **kwargs):
+        print("Learning in progress...")
         self.learning_algorithm.learn(self, training_data_set, number_of_epochs, learning_rate, size_of_batch)
