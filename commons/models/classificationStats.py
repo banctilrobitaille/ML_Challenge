@@ -7,6 +7,7 @@ class ClassificationStats(object):
         "KNN": "K Nearest Neighbors",
         "PKNN": "Multi Processed K Nearest Neighbors",
         "NN": "Neural Networks",
+        "LOREG": "Logistic Regression"
     }
 
     __write_lock = RLock()
