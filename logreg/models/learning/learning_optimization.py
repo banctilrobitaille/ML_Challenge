@@ -1,6 +1,6 @@
 import numpy as np
-from LogReg.models.feature_computers.prediction_computer import ProbabilityComputerFactory
-from LogReg.models.cost_computers.cost_computer import CostComputerFactory
+from logreg.models.feature_computers.prediction_computer import ProbabilityComputerFactory
+from logreg.models.cost_computers.cost_computer import CostComputerFactory
 
 
 class OptimizationType(object):
@@ -21,7 +21,7 @@ class UpdateWeights(object):
 
 
 class Learn(object):
-    def __init__(self, learning_rate=0.1, epoch=100, cost_threshold=0.1, debug=False):
+    def __init__(self, learning_rate, epoch, cost_threshold, debug):
         self.learning_rate = learning_rate
         self.epoch = epoch
         self.cost_threshold = cost_threshold
@@ -40,3 +40,9 @@ class Learn(object):
             if cost < self.cost_threshold:
                 return weight_matrix
         return weight_matrix
+
+
+class LearningProcessFactory(object):
+    @staticmethod
+    def create_learning_process(learning_rate, epoch, cost_threshold, debug):
+        return Learn(learning_rate, epoch, cost_threshold, debug)
