@@ -16,8 +16,8 @@ class CostFunction(object):
 
 class NegLogLikelihoodCostComputer(CostFunction):
     @classmethod
-    def compute_cost(cls, target, prob):
-        return (-(np.log(prob) * target).sum(1)).mean()
+    def compute_cost(cls, target_matrix, probability_matrix):
+        return (-(np.log(probability_matrix) * target_matrix).sum(1)).mean()
 
 
 class CostComputerFactory(object):
