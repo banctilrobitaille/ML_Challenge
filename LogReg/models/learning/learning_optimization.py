@@ -21,8 +21,8 @@ class UpdateWeights(object):
 
 
 class Learn(object):
-    def __init__(self, learnig_rate=0.1, epoch=100, cost_threshold=0.1, debug=False):
-        self.learning_rate = learnig_rate
+    def __init__(self, learning_rate=0.1, epoch=100, cost_threshold=0.1, debug=False):
+        self.learning_rate = learning_rate
         self.epoch = epoch
         self.cost_threshold = cost_threshold
         self._debug = debug
