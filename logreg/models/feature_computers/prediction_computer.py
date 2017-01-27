@@ -46,6 +46,10 @@ class Predict(ComputeProbability):
         softmax_matrix = np.apply_along_axis(ComputeProbability.probability_vector, 1, input_matrix)
         return softmax_matrix
 
+    @staticmethod
+    def prediction_is_true(prediction, target):
+        return np.array_equal(prediction, target)
+
 
 class ProbabilityComputerFactory(object):
     @staticmethod
