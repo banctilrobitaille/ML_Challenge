@@ -1,8 +1,7 @@
 import numpy as np
-import math
+#from models.learning.learning_optimization import
 
-
-class LogReg:
+class LogReg(object):
     __class = 10
     __basisFct = None
     __weights = None
@@ -13,7 +12,7 @@ class LogReg:
     __learningRate = 0
     __targets = None
 
-    def __init__(self, dataSet, learningRate=0.0001):
+    def __init__(self, dataSet, learningRate=0.1):
         self.__features = self.__getFeatures(dataSet)
         self.__targets = self.__getLabel(dataSet)
         self.__learningRate = learningRate
@@ -105,9 +104,9 @@ class LogReg:
             #if self.__error != 0:
             #self.__updateWeights(prob, self.__targets, self.__features)
             grad = self.__grad(prob, self.__targets, self.__features)
-            self.__weights -= map(lambda x: x * self.__learningRate, self.__grad(prob, self.__targets, self.__features))
-            #if self.__error < 0.5:
-            #    break
+            self.__weights -= self.__learningRate * self.__grad(prob, self.__targets, self.__features)#map(lambda x,y: x * y, self.__grad(prob, self.__targets, self.__features),self.__learningRate)
+            if self.__error < 0.5:
+                break
         print "Training finished"
         print "------------------------------"
 
