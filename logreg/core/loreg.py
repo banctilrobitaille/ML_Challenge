@@ -9,7 +9,7 @@ from logreg.models.feature_computers.prediction_computer import ProbabilityCompu
 class LogRegClassifier(object):
     def __init__(self, dataset, learning_rate=0.1):
         self.__features = DataExtractor.data_extraction(dataset, "feature")
-        self.__targets = DataExtractor.data_extraction(dataset, "target")
+        self.__targets = DataExtractor.data_extraction(dataset, "label")
         np.random.seed(300)
         self.__weights = np.random.rand(len(dataset.data_instances[0].features) + 1, 10)
         self.__learning_rate = learning_rate
@@ -20,11 +20,10 @@ class LogRegClassifier(object):
                                                                           cost_threshold, debug)
         self.__weights = learning_process.learn(self.__weights, self.__targets, self.__features)
         print "Training finished"
-        print "__________________________________"
 
     def classify(self, dataset):
         features_to_classify = DataExtractor.data_extraction(dataset, "feature")
-        targets_to_predict = DataExtractor.data_extraction(dataset, "target")
+        targets_to_predict = DataExtractor.data_extraction(dataset, "label")
         prediction_computer = ProbabilityComputerFactory.create_probability_computer("predict")
 
         stat = ClassificationStats(ClassificationStats.CLASSIFICATION_METHODS["LOREG"])
@@ -33,4 +32,4 @@ class LogRegClassifier(object):
         for prediction, target in zip(predictions, targets_to_predict):
             stat.register_data_instance_classification(np.argmax(target),
                                                        prediction_computer.prediction_is_true(prediction, target))
-        stat.to_string()
+        print stat.to_string()
