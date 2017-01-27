@@ -39,7 +39,7 @@ class Softmax(ComputeProbability):
 class Predict(ComputeProbability):
     def predict(self, input_matrix):
         softmax_matrix = self.compute_probability(input_matrix)
-        prediction_matrix = np.apply_along_axis(ComputeProbability.probability_vector, 1, softmax_matrix)
+        prediction_matrix = np.apply_along_axis(ComputeProbability.prediction_vector, 1, softmax_matrix)
         return prediction_matrix
 
     def compute_probability(self, input_matrix):
