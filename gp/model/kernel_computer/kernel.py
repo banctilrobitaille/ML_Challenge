@@ -49,5 +49,5 @@ class KernelComputerFactory(object):
             return LinearKernel(c)
         elif kernel_type == KernelComputerType.POLYNOMIAL:
             return PolynomialKernel(c, d, alpha)
-        elif kernel_type == KernelComputerType.GAUSSIAN
+        elif kernel_type == KernelComputerType.GAUSSIAN:
             return GaussianKernel(sigma)
