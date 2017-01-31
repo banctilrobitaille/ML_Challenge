@@ -1,9 +1,11 @@
 import numpy as np
 import abc
 
+from commons.models.classificationStats import ClassificationStats
 from models.cost_computers.cost_computer import CostComputerFactory
 from models.learning.learning_algorithms import LearningAlgorithmFactory
 from models.neurons.neuron import NeuronFactory
+from utils.label_mapper import LabelMapper
 
 
 class NetworkTypes(object):
@@ -70,6 +72,21 @@ class AbstractNetwork(object):
     def learning_algorithm(self):
         return self.__learning_algorithm
 
+    @property
+    def cost_computer(self):
+        return self.__cost_computer
+
+    def classify(self, data_set):
+        print("NN classification in progress...")
+        classification_stats = ClassificationStats(ClassificationStats.CLASSIFICATION_METHODS["NN"])
+        classification_stats.set_classification_start_time()
+        for data_instance in data_set.data_instances:
+            estimated_label = LabelMapper().map_vector_to_label(self.accept(data_instance.features_values_vector))
+            correctly_classified = data_instance.label == estimated_label
+            classification_stats.register_data_instance_classification(label=data_instance.label,
+                                                                       correctly_classified=correctly_classified)
+        print(classification_stats.to_string())
+
     @abc.abstractmethod
     def accept(self, input_vector):
         raise NotImplementedError()
@@ -85,10 +102,10 @@ class FeedForwardNetwork(AbstractNetwork):
         super(FeedForwardNetwork, self).__init__(number_of_layers, number_of_neurons_per_layer, type_of_neuron,
                                                  cost_function_type, learning_algorithm_type)
 
-    def accept(self, input_vector):
+    def accept(self, vector):
         for biases, weights in zip(self.biases, self.weights):
-            output_vector = self.neuron.compute(np.dot(weights, input_vector) + biases)
-        return output_vector
+            vector = self.neuron.compute(np.dot(vector, weights) + biases.T)
+        return vector
 
     def learn(self, training_data_set, number_of_epochs, learning_rate, size_of_batch, **kwargs):
         print("Learning in progress...")

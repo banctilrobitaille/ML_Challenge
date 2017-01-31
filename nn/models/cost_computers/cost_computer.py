@@ -1,4 +1,5 @@
 import abc
+import numpy as np
 
 
 class CostFunctionTypes(object):
@@ -10,17 +11,30 @@ class CostComputer(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def compute_cost(self, *args):
+    def compute_cost(self, *args, **kwargs):
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def compute_cost_derivative(self, *args, **kwargs):
         raise NotImplementedError()
 
 
 class QuadraticCostComputer(CostComputer):
-    def compute_cost(self, *args):
-        pass
+    def compute_cost(self, *args, **kwargs):
+        cost = (1.0 / kwargs['total_number_of_training_inputs']) * np.square(
+                np.linalg.norm(kwargs['approximated_output_vector'] - kwargs['expected_output_vector']))
+        print("Cost: " + str(cost) + "\n")
+        return cost
+
+    def compute_cost_derivative(self, *args, **kwargs):
+        return kwargs["output_vector"] - kwargs["expected_output_vector"]
 
 
 class CrossEntropyComputer(CostComputer):
-    def compute_cost(self, *args):
+    def compute_cost(self, *args, **kwargs):
+        pass
+
+    def compute_cost_derivative(self, *args, **kwargs):
         pass
 
 

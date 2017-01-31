@@ -10,7 +10,6 @@ class ClassificationStats(object):
         "LOREG": "Logistic Regression"
     }
 
-    __write_lock = RLock()
     __classification_method = ""
     __total_number_of_classified_data_instances = 0
     __number_of_correctly_classified_data_instances = 0
@@ -55,5 +54,5 @@ class ClassificationStats(object):
                          float(self.__number_of_correctly_classified_data_instances) / float(
                                  self.__total_number_of_classified_data_instances) * 100) + "%" + "\n\n",
                  "Runtime: " + str(
-                         (datetime.now() - self.__classification_start_time).total_seconds() / 60) + "minutes \n",
+                         (datetime.now() - self.__classification_start_time).total_seconds() / 60) + " minutes \n",
                  "--------------------------------------------------------------------------------------" + "\n"])

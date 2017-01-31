@@ -1,6 +1,7 @@
 import abc
 import numpy as np
 from commons.helpers.datasetHelper import DatasetHelper
+from utils.label_mapper import LabelMapper
 
 
 class LearningAlgorithmTypes(object):
@@ -34,46 +35,56 @@ class SGD(AbstractLearningAlgorithm):
 
             for batch in np.array_split(training_data_set.data_instances,
                                         len(training_data_set.data_instances) / size_of_batch):
-                self.__update(network, batch, learning_rate)
+                self.__update_weights_and_bias(network, batch, learning_rate)
 
-    def __update(self, network, batch, learning_rate):
-        nabla_b = [np.zeros(b.shape) for b in network.biases]
-        nabla_w = [np.zeros(w.shape) for w in network.weights]
+    def __update_weights_and_bias(self, network, batch, learning_rate):
+        number_of_training_instances = len(batch)
+        updated_biases = map(lambda layer_biases: np.zeros(layer_biases.shape), network.biases)
+        updated_weights = map(lambda layer_weights: np.zeros(layer_weights.shape), network.weights)
 
         for data_instance in batch:
-            delta_nabla_b, delta_nabla_w = self.back_propagate(network, DatasetHelper.normalize(
-                data_instance.features_values_vector),
-                                                               data_instance.label)
-            nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
-            nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
-        network.weights = [w - (learning_rate / len(batch)) * nw
-                           for w, nw in zip(network.weights, nabla_w)]
-        network.biases = [b - (learning_rate / len(batch)) * nb
-                          for b, nb in zip(network.biases, nabla_b)]
+            # Computing the partial derivatives of the function cost w.r.t. each weight and bias. These partial
+            # derivatives are the gradient's components.
+            delta_biases, delta_weights = self.__back_propagate(network, data_instance.features_values_vector,
+                                                                data_instance.label)
 
-    def back_propagate(self, network, x, y):
-        nabla_b = [np.zeros(b.shape) for b in network.biases]
-        nabla_w = [np.zeros(w.shape) for w in network.weights]
-        activation = x
-        activations = [x]
-        zs = []
-        for b, w in zip(network.biases, network.weights):
-            z = np.dot(activation, w) + b
-            zs.append(z)
-            activation = network.neuron.compute(z)
-            activations.append(activation)
+            # Accumulating the delta of weights and biases for each training sample of the batch in order to adjust
+            # the network's weights and biases in the opposite direction of the gradient.
+            updated_biases = [new_bias + delta for new_bias, delta in zip(updated_biases, delta_biases)]
+            updated_weights = [new_weight + delta for new_weight, delta in zip(updated_weights, delta_weights)]
 
-        delta = self.cost_derivative(activations[-1], y) * network.neuron.compute_derivative(zs[-1])
-        nabla_b[-1] = delta
-        nabla_w[-1] = np.dot(delta, activations[-2].transpose())
+        # Updating the network's weights and biases in the opposite direction of the cost function's gradient
+        network.weights = [current_weight - (learning_rate / number_of_training_instances) * new_weight
+                           for current_weight, new_weight in zip(network.weights, updated_weights)]
+        network.biases = [current_bias - (learning_rate / number_of_training_instances) * new_bias
+                          for current_bias, new_bias in zip(network.biases, updated_biases)]
 
-        for l in xrange(2, network.number_of_layers):
-            z = zs[-l]
-            sp = network.neuron.compute(z)
-            delta = np.dot(network.weights[-l + 1].transpose(), delta) * sp
-            nabla_b[-l] = delta
-            nabla_w[-l] = np.dot(delta, activations[-l - 1].transpose())
-        return nabla_b, nabla_w
+    def __back_propagate(self, network, output_vector, expected_output_vector):
+        last_layer = -1
+        updated_biases = map(lambda layer_biases: np.zeros(layer_biases.shape), network.biases)
+        updated_weights = map(lambda layer_weights: np.zeros(layer_weights.shape), network.weights)
 
-    def cost_derivative(self, output_activations, y):
-        return output_activations - y
+        output_vectors_by_layer = [output_vector.reshape(1, len(output_vector))]
+        input_vectors_by_layer = []
+
+        for bias, weights in zip(network.biases, network.weights):
+            next_layer_input = np.dot(output_vector, weights) + bias.T
+            input_vectors_by_layer.append(next_layer_input)
+            output_vector = network.neuron.compute(next_layer_input)
+            output_vectors_by_layer.append(output_vector)
+
+        delta = network.cost_computer.compute_cost_derivative(output_vector=output_vectors_by_layer[last_layer],
+                                                              expected_output_vector=LabelMapper().map_label_to_vector(
+                                                                      expected_output_vector)) * \
+                network.neuron.compute_derivative(input_vectors_by_layer[last_layer])
+        updated_biases[last_layer] = delta.T
+        updated_weights[last_layer] = np.dot(output_vectors_by_layer[last_layer - 1].T, delta)
+
+        for layer_index in xrange(2, network.number_of_layers):
+            z = input_vectors_by_layer[-layer_index]
+            sp = network.neuron.compute_derivative(z)
+            delta = np.dot(delta, network.weights[-layer_index + 1].T) * sp
+            updated_biases[-layer_index] = delta.T
+            updated_weights[-layer_index] = np.dot(output_vectors_by_layer[-layer_index - 1].T, delta)
+
+        return updated_biases, updated_weights
