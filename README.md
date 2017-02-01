@@ -36,7 +36,7 @@ Even with multiprocessing K-NN it took more than 6 minutes to classify 1000 samp
 ```
 #### Preliminary Results
 ##### Global success rate : 92.37% with a 4 layers feed forward neural network using SGD (Stochastic gradient descent) as learning algorithm.
-
+<img src="/images/result_nn.PNG">
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
 - [X] Get the code
