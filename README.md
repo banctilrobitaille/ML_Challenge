@@ -17,7 +17,26 @@ The K Nearest Neighbors (K-NN) can be a very efficient and easy to implement alg
 Even with multiprocessing K-NN it took more than 6 minutes to classify 1000 samples.
 ##### Global success rate : 94.1% with 49 features, and 95.3% with 196 features, both with Otsu thresholding as data pre process
   <img src="/images/result_knn_3.PNG">
+### Feed Forward Neural Network
+#### Usage example:
+```python
+  from nn.models.cost_computers.cost_computer import CostFunctionTypes
+  from nn.core.network import NetworkFactory, NetworkTypes
+  from nn.models.neurons.neuron import NeuronTypes
+  from nn.models.learning.learning_algorithms import LearningAlgorithmTypes
   
+  neural_network = NetworkFactory.create_network_with(network_type=NetworkTypes.FEED_FORWARD,
+                                                        number_of_layers=4,
+                                                        number_of_neurons_per_layer=[784, 50, 25, 10],
+                                                        type_of_neuron=NeuronTypes.SIGMOID,
+                                                        cost_function_type=CostFunctionTypes.QUADRATIC,
+                                                        learning_algorithm_type=LearningAlgorithmTypes.SGD)
+   neural_network.learn(training_data_set=training_data_set, number_of_epochs=75, learning_rate=0.5, size_of_batch=200)
+   neural_network.classify(test_data_set)
+```
+#### Preliminary Results
+##### Global success rate : 92.37% with a 4 layers feed forward neural network using SGD (Stochastic gradient descent) as learning algorithm.
+  <img src="/images/result_knn_3.PNG">
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
 - [X] Get the code
