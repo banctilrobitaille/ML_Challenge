@@ -20,10 +20,10 @@ Even with multiprocessing K-NN it took more than 6 minutes to classify 1000 samp
 ### Feed Forward Neural Network
 #### Usage example:
 ```python
-  from nn.models.cost_computers.cost_computer import CostFunctionTypes
-  from nn.core.network import NetworkFactory, NetworkTypes
   from nn.models.neurons.neuron import NeuronTypes
+  from nn.models.cost_computers.cost_computer import CostFunctionTypes
   from nn.models.learning.learning_algorithms import LearningAlgorithmTypes
+  from nn.core.network import NetworkFactory, NetworkTypes
   
   neural_network = NetworkFactory.create_network_with(network_type=NetworkTypes.FEED_FORWARD,
                                                         number_of_layers=4,
