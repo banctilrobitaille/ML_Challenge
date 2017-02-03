@@ -5,7 +5,6 @@ from commons.models.constants.datasetType import DatasetType
 from commons.models.datasetFactory import DatasetFactory
 from knn.core.classifier import KnnClassifier as knn
 from knn.core.classifier import MultiProcessedKnnClassifier as multi_processed_knn
-from logreg.logreg import LogReg
 from logreg.core.loreg import LogRegClassifier
 
 if __name__ == '__main__':
