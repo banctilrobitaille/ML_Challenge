@@ -13,6 +13,7 @@ from knn.core.classifier import MultiProcessedKnnClassifier as multi_processed_k
 from logreg.core.loreg import LogRegClassifier
 import sklearn.gaussian_process.gaussian_process
 
+
 def launch_knn_classification_with(number_of_instances_to_classify):
     try:
         training_data_set, test_data_set = FileHelper.load_data_sets_for(ClassificationMethod.KNN)
@@ -52,10 +53,25 @@ def launch_neural_network_classification():
     neural_network.classify(test_data_set)
     FileHelper.save_trained_model(neural_network, ClassificationMethod.NN)
 
+def launch_log_reg_classification():
+    try:
+        training_data_set, test_data_set = FileHelper.load_data_sets_for(ClassificationMethod.LOG_REG)
+    except UnableToLoadDatasetException as e:
+        print(e.message)
+        training_data_set, test_data_set = DatasetFactory.create_and_save_data_set_from_files(
+                with_data_normalization=False,
+                with_threshold=True,
+                number_of_features=196,
+                classification_method=ClassificationMethod.LOG_REG)
+
+    log_reg_classifier = LogRegClassifier(training_data_set, 0.1)
+    log_reg_classifier.train(number_epoch=10000, cost_threshold=0.1, debug=True)
+    log_reg_classifier.classify(test_data_set)
+
+    FileHelper.save_trained_model(log_reg_classifier, ClassificationMethod.LOG_REG)
+
 
 if __name__ == '__main__':
     # launch_knn_classification_with(1)
-    launch_neural_network_classification()
-    """cls = LogRegClassifier(training_data_set, 0.1)
-    cls.train(10000, 0.5, True)
-    cls.classify(test_data_set)"""
+    # launch_neural_network_classification()
+    launch_log_reg_classification()
