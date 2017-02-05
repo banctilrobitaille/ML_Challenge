@@ -1,4 +1,6 @@
 from commons.models.constants.filePath import FilePath
+from commons.models.constants.datasetType import DatasetType
+from commons.helpers.fileHelper import FileHelper
 from commons.models.digit import Digit
 from dataset import Dataset
 import os
@@ -9,8 +11,18 @@ import numpy as np
 
 class DatasetFactory(object):
     @classmethod
-    def create_dataset_from_files(cls, data_set_type):
-        print("Creating " + data_set_type + " dataset from files... \n")
+    def create_and_save_data_set_from_files(cls, with_data_normalization, with_threshold, number_of_features,
+                                            classification_method):
+        training_data_set = DatasetFactory.create_data_set_from_files(DatasetType.TRAINING, with_data_normalization,
+                                                                      with_threshold, number_of_features)
+        test_data_set = DatasetFactory.create_data_set_from_files(DatasetType.TEST, with_data_normalization,
+                                                                  with_threshold, number_of_features)
+        FileHelper.save_data_set(training_data_set, test_data_set, classification_method)
+        return test_data_set, test_data_set
+
+    @classmethod
+    def create_data_set_from_files(cls, data_set_type, with_data_normalization, with_threshold, number_of_features):
+        print("Creating " + data_set_type + " data set from files... \n")
         images = None
         labels = None
 
@@ -24,7 +36,9 @@ class DatasetFactory(object):
         labels = np.array(labels)
         images = np.array(images).reshape((len(images), 28, 28))
 
-        return Dataset().with_data_instances(map(lambda image, label: Digit.from_image(image, label), images, labels))
+        return Dataset().with_data_instances(map(
+                lambda image, label: Digit.from_image(image, label, with_data_normalization, with_threshold,
+                                                      number_of_features), images, labels))
 
     @classmethod
     def __load(cls, path_img, path_lbl):

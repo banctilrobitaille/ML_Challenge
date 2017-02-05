@@ -2,21 +2,32 @@ import abc
 import numpy as np
 
 
-class Neuron(object):
+class NeuronTypes(object):
+    SIGMOID = "sigmoid"
+
+
+class AbstractNeuron(object):
     __metaclass__ = abc.ABCMeta
 
-    __bias = 0
-    __weight = 0
+    @abc.abstractmethod
+    def compute(self, vector):
+        raise NotImplementedError
 
-    def __init__(self):
-        pass
-
-    def initialize(self):
-        self.__bias = np.random.randn()
-        self.__weight = np.random.randn()
+    @abc.abstractmethod
+    def compute_derivative(self, vector):
+        raise NotImplementedError()
 
 
-class SigmoidNeuron(Neuron):
-    def __init__(self):
-        super(SigmoidNeuron, self).__init__()
-        self.initialize()
+class SigmoidNeuron(AbstractNeuron):
+    def compute(self, vector):
+        return 1.0 / (1.0 + np.exp(-vector))
+
+    def compute_derivative(self, vector):
+        return self.compute(vector) * (1 - self.compute(vector))
+
+
+class NeuronFactory(object):
+    @staticmethod
+    def create_neuron_from_type(neuron_type):
+        if neuron_type == NeuronTypes.SIGMOID:
+            return SigmoidNeuron()
