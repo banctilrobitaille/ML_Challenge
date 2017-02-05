@@ -55,7 +55,7 @@ def launch_neural_network_classification():
 
 def launch_log_reg_classification():
     try:
-        training_data_set, test_data_set = DatasetLoader.load_data_sets_for(ClassificationMethod.LOG_REG)
+        training_data_set, test_data_set = FileHelper.load_data_sets_for(ClassificationMethod.KNN)
     except UnableToLoadDatasetException as e:
         print(e.message)
         training_data_set, test_data_set = DatasetFactory.create_and_save_data_set_from_files(

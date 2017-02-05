@@ -2,10 +2,10 @@ import numpy as np
 import abc
 
 from commons.models.classificationStats import ClassificationStats
-from models.cost_computers.cost_computer import CostComputerFactory
-from models.learning.learning_algorithms import LearningAlgorithmFactory
-from models.neurons.neuron import NeuronFactory
-from utils.label_mapper import LabelMapper
+from nn.models.cost_computers.cost_computer import CostComputerFactory
+from nn.models.learning.learning_algorithms import LearningAlgorithmFactory
+from nn.models.neurons.neuron import NeuronFactory
+from nn.utils.label_mapper import LabelMapper
 
 
 class NetworkTypes(object):

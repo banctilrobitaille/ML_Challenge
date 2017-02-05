@@ -1,6 +1,6 @@
 import abc
 import numpy as np
-from utils.label_mapper import LabelMapper
+from nn.utils.label_mapper import LabelMapper
 from datetime import datetime
 
 
