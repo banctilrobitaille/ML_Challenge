@@ -21,10 +21,8 @@ class CostComputer(object):
 
 class QuadraticCostComputer(CostComputer):
     def compute_cost(self, *args, **kwargs):
-        cost = (1.0 / kwargs['total_number_of_training_inputs']) * np.square(
+        return (1.0 / kwargs['total_number_of_training_inputs']) * np.square(
                 np.linalg.norm(kwargs['approximated_output_vector'] - kwargs['expected_output_vector']))
-        print("Cost: " + str(cost) + "\n")
-        return cost
 
     def compute_cost_derivative(self, *args, **kwargs):
         return kwargs["output_vector"] - kwargs["expected_output_vector"]
