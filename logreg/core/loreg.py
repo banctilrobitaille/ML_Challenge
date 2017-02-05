@@ -11,7 +11,7 @@ class LogRegClassifier(object):
         self.__features = DataExtractor.data_extraction(dataset, "feature")
         self.__targets = DataExtractor.data_extraction(dataset, "label")
         np.random.seed(300)
-        self.__weights = np.random.rand(len(dataset.data_instances[0].features) + 1, 10)
+        self.__weights = np.random.rand(self.__features.shape[1], 10)
         self.__learning_rate = learning_rate
 
     def train(self, number_epoch=1000, cost_threshold=0.001, debug=False):
