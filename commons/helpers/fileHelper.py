@@ -8,7 +8,7 @@ from commons.models.constants.datasetType import DatasetType
 from commons.exceptions.unableToLoadDatasetException import UnableToLoadDatasetException
 
 
-class DatasetLoader(object):
+class FileHelper(object):
     @staticmethod
     def load_data_sets_for(classification_method):
         print("".join(["Loading data sets for ", classification_method, "..."]))
@@ -55,7 +55,17 @@ class DatasetLoader(object):
     @staticmethod
     def save_data_set(training_data_set, test_data_set, classification_method):
         try:
-            DatasetLoader.save_data_set_with_type(training_data_set, DatasetType.TRAINING, classification_method)
-            DatasetLoader.save_data_set_with_type(test_data_set, DatasetType.TEST, classification_method)
+            FileHelper.save_data_set_with_type(training_data_set, DatasetType.TRAINING, classification_method)
+            FileHelper.save_data_set_with_type(test_data_set, DatasetType.TEST, classification_method)
         except UnableToSaveDatasetException as e:
             print(e.message)
+
+    @staticmethod
+    def save_trained_model(trained_model, classification_method):
+        print("".join(["Saving trained model for future use..."]))
+        try:
+            trained_model_file = classification_method + "_" + FilePath.TRAINED_MODEL_FILE_NAME
+            pickle.dump(trained_model, open(os.path.join(FilePath.DATA_FOLDER, trained_model_file), "wb"))
+        except Exception as e:
+            raise UnableToSaveDatasetException(
+                    "".join(["Unable to save: ", classification_method, "trained model with cause: ", e.message]))
