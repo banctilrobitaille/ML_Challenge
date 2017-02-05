@@ -1,7 +1,7 @@
 import abc
 import numpy as np
-from commons.helpers.datasetHelper import DatasetHelper
 from utils.label_mapper import LabelMapper
+from datetime import datetime
 
 
 class LearningAlgorithmTypes(object):
@@ -31,6 +31,7 @@ class SGD(AbstractLearningAlgorithm):
 
     def learn(self, network, training_data_set, number_of_epochs, learning_rate, size_of_batch, **kwargs):
         for epoch in range(number_of_epochs):
+            print("Epoch: " + str(epoch) + " Start time: " + str(datetime.now()))
             np.random.shuffle(training_data_set.data_instances)
 
             for batch in np.array_split(training_data_set.data_instances,
@@ -59,7 +60,7 @@ class SGD(AbstractLearningAlgorithm):
         network.biases = [current_bias - (learning_rate / number_of_training_instances) * new_bias
                           for current_bias, new_bias in zip(network.biases, updated_biases)]
 
-    def __back_propagate(self, network, output_vector, expected_output_vector):
+    def __back_propagate(self, network, output_vector, expected_output_label):
         last_layer = -1
         updated_biases = map(lambda layer_biases: np.zeros(layer_biases.shape), network.biases)
         updated_weights = map(lambda layer_weights: np.zeros(layer_weights.shape), network.weights)
@@ -75,7 +76,7 @@ class SGD(AbstractLearningAlgorithm):
 
         delta = network.cost_computer.compute_cost_derivative(output_vector=output_vectors_by_layer[last_layer],
                                                               expected_output_vector=LabelMapper().map_label_to_vector(
-                                                                      expected_output_vector)) * \
+                                                                      expected_output_label)) * \
                 network.neuron.compute_derivative(input_vectors_by_layer[last_layer])
         updated_biases[last_layer] = delta.T
         updated_weights[last_layer] = np.dot(output_vectors_by_layer[last_layer - 1].T, delta)

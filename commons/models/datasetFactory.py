@@ -1,6 +1,6 @@
 from commons.models.constants.filePath import FilePath
 from commons.models.constants.datasetType import DatasetType
-from commons.helpers.datasetLoader import DatasetLoader
+from commons.helpers.fileHelper import FileHelper
 from commons.models.digit import Digit
 from dataset import Dataset
 import os
@@ -17,7 +17,7 @@ class DatasetFactory(object):
                                                                       with_threshold, number_of_features)
         test_data_set = DatasetFactory.create_data_set_from_files(DatasetType.TEST, with_data_normalization,
                                                                   with_threshold, number_of_features)
-        DatasetLoader.save_data_set(training_data_set, test_data_set, classification_method)
+        FileHelper.save_data_set(training_data_set, test_data_set, classification_method)
         return test_data_set, test_data_set
 
     @classmethod
