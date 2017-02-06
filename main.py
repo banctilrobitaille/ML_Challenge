@@ -1,8 +1,6 @@
 from commons.exceptions.unableToLoadDatasetException import UnableToLoadDatasetException
-from commons.exceptions.unableToSaveDatasetException import UnableToSaveDatasetException
 from commons.helpers.fileHelper import FileHelper
 from commons.models.constants.classificationMethod import ClassificationMethod
-from commons.models.constants.datasetType import DatasetType
 from commons.models.datasetFactory import DatasetFactory
 from nn.models.cost_computers.cost_computer import CostFunctionTypes
 from nn.core.network import NetworkFactory, NetworkTypes
@@ -11,8 +9,6 @@ from nn.models.learning.learning_algorithms import LearningAlgorithmTypes
 from knn.core.classifier import KnnClassifier as knn
 from knn.core.classifier import MultiProcessedKnnClassifier as multi_processed_knn
 from logreg.core.loreg import LogRegClassifier
-from gp.core.gaussian_classifier.gaussian_process_classifier import GaussianProcessClassifier
-
 
 
 def launch_knn_classification_with(multi_processed=False):
@@ -74,6 +70,6 @@ def launch_log_reg_classification():
 
 
 if __name__ == '__main__':
-     launch_knn_classification_with(1)
-     launch_neural_network_classification()
-     launch_log_reg_classification()
+    launch_knn_classification_with()
+    launch_neural_network_classification()
+    launch_log_reg_classification()
