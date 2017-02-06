@@ -18,7 +18,7 @@ class DataExtractor(object):
     def feature_extraction(cls, dataset):
         list_of_list = []
         for instance in dataset.data_instances:
-            value_list = instance.features.values()
+            value_list = instance._DataInstance__features_values
             value_list.append(1)
             list_of_list.append(value_list)
         features = np.array(list_of_list)
