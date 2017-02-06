@@ -18,7 +18,7 @@ class KnnClassifier(object):
         classification_stats = ClassificationStats(ClassificationStats.CLASSIFICATION_METHODS["KNN"])
 
         classification_stats.set_classification_start_time()
-        for data_instance in data_set.data_instances[:10]:
+        for data_instance in data_set.data_instances:
             estimated_label = self.__knn_model.classify(data_instance, number_of_neighbors=number_of_neighbors)
             correctly_classified = data_instance.label == estimated_label
             classification_stats.register_data_instance_classification(label=data_instance.label,
@@ -60,7 +60,7 @@ class MultiProcessedKnnClassifier(object):
         classification_threads = map(
                 lambda data_instances: ClassificationProcess(self.__knn_model, data_instances,
                                                              self.__classification_stats, number_of_neighbors),
-                np.array_split(data_set.data_instances[:1000], multiprocessing.cpu_count()))
+                np.array_split(data_set.data_instances, multiprocessing.cpu_count()))
 
         self.__classification_stats.set_classification_start_time()
 
