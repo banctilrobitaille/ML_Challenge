@@ -13,7 +13,8 @@ from knn.core.classifier import MultiProcessedKnnClassifier as multi_processed_k
 from logreg.core.loreg import LogRegClassifier
 import sklearn.gaussian_process.gaussian_process
 
-def launch_knn_classification_with(number_of_instances_to_classify):
+
+def launch_knn_classification_with(multi_processed=False):
     try:
         training_data_set, test_data_set = FileHelper.load_data_sets_for(ClassificationMethod.KNN)
     except UnableToLoadDatasetException as e:
@@ -24,7 +25,7 @@ def launch_knn_classification_with(number_of_instances_to_classify):
                 number_of_features=196,
                 classification_method=ClassificationMethod.KNN)
 
-    if number_of_instances_to_classify >= 1000:
+    if multi_processed:
         multi_processed_knn(training_data_set=training_data_set).classify(data_set=test_data_set,
                                                                           number_of_neighbors=10)
     else:
