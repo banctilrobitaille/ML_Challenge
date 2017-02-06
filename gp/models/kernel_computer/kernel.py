@@ -43,6 +43,22 @@ class SquaredExponentialKernel(KernelComputer):
         return math.pow(self.__sigma, 2.0) * math.exp(
             (math.pow(np.linalg.norm((vector_1 - vector_2)), 2)) / 2 * math.pow(self.__l, 2))
 
+    @property
+    def sigma(self):
+        return self.__sigma
+
+    @sigma.setter
+    def sigma(self, value):
+        self.__sigma = value
+
+    @property
+    def l(self):
+        return self.__l
+
+    @l.setter
+    def l(self, value):
+        self.__l = value
+
 
 class KernelComputerFactory(object):
     @staticmethod
