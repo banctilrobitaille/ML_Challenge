@@ -53,18 +53,18 @@ Even with multiprocessing K-NN it took more than 6 minutes to classify 1000 samp
 ##### Feature branch
 > feature/ [Short feature description] [Issue number]
 
-#####Bug branch
+##### Bug branch
 > fix/ [Short fix description] [Issue number]
 
 #### Commits syntax:
 
-#####Adding code:
+##### Adding code:
 > \+ Added [Short Description] [Issue Number]
 
-#####Deleting code:
+##### Deleting code:
 > \- Deleted [Short Description] [Issue Number]
 
-#####Modifying code:
+##### Modifying code:
 > \* Changed [Short Description] [Issue Number]
 
 
