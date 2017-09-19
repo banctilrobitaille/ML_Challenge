@@ -34,8 +34,11 @@ Even with multiprocessing K-NN it took more than 6 minutes to classify 1000 samp
    neural_network.learn(training_data_set=training_data_set, number_of_epochs=75, learning_rate=0.5, size_of_batch=200)
    neural_network.classify(test_data_set)
 ```
+
 #### Preliminary Results
+
 ##### Global success rate : 92.37% with a 4 layers feed forward neural network using SGD (Stochastic gradient descent) as learning algorithm.
+
 <img src="/images/result_nn.PNG">
 #### How to contribute ?
 - [X] Create a branch by feature and/or bug fix
